@@ -10,7 +10,8 @@ included here.
 - Product page: `index.html`, at https://blenderprocedural.github.io/lithos-terrain/
 - Documentation: `docs.html`, at https://blenderprocedural.github.io/lithos-terrain/docs.html
 - `images/`: the store images, the page images and the video posters; `media/`: the feature loops (MP4 and GIF)
-- Inter is bundled in `fonts/`, so the pages make no external requests
+- Inter is bundled in `fonts/`, so the pages make no external requests until a visitor presses play on the video
+  (then the YouTube player loads, in its privacy-enhanced mode)
 
 ## Embedding
 

@@ -166,6 +166,22 @@
                         padding: .42rem .6rem; border-radius: 2rem; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
   .note { font-size: .7rem; color: var(--dim); margin-top: .8rem; }
 
+  /* film: a poster with a play button; the YouTube player loads only when it is pressed */
+  .film { cursor: pointer; }
+  .film > img { transition: transform .6s ease, filter .6s ease; }
+  .film:hover > img { transform: scale(1.015); filter: brightness(1.06); }
+  .film .play { position: absolute; left: 50%; top: 42%; width: 4.6rem; height: 4.6rem; margin: -2.3rem 0 0 -2.3rem; border: 0;
+                border-radius: 50%; background: rgba(10,12,16,.55); box-shadow: 0 0 0 1px rgba(255,255,255,.55), 0 1rem 2.4rem rgba(0,0,0,.5);
+                backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); cursor: pointer; display: grid; place-items: center;
+                transition: background .3s ease, transform .3s ease; }
+  .film:hover .play { background: var(--accent); transform: scale(1.06); }
+  .film .play::before { content: ""; margin-left: .3rem; border-style: solid; border-width: .85rem 0 .85rem 1.35rem;
+                        border-color: transparent transparent transparent #fff; }
+  .film:hover .play::before { border-left-color: #0b0d10; }
+  .film iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+  .film.on { cursor: default; }
+  .film.on > img, .film.on .play, .film.on .cap { display: none; }
+
   /* uses and reasons */
   .uses { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; margin-top: 1.7rem; }
   .use { border-top: 2px solid var(--accent); background: var(--card); border-radius: 0 0 .8rem .8rem; padding: 1rem 1rem 1.1rem;
@@ -195,6 +211,16 @@
     <div class="stat"><div class="n">5</div><div class="l">Biomes included</div></div>
     <div class="stat"><div class="n">8K</div><div class="l">16-bit &amp; float export</div></div>
   </div>
+
+  <section>
+    <div class="eyebrow">Watch</div>
+    <h2>The whole studio <em>in under two minutes.</em></h2>
+    <div class="frame r169 film" id="film" data-yt="XMQ21Cuurac" role="button" tabindex="0" aria-label="Play the Lithos Terrain video">
+      <img src="images/film_poster.jpg" alt="Lithos Terrain title over a forested mountain at dusk" loading="lazy">
+      <span class="play" aria-hidden="true"></span>
+      <span class="cap">Video · 1:50</span>
+    </div>
+  </section>
 
   <section>
     <div class="eyebrow">How it works</div>
@@ -244,7 +270,19 @@
       <figure><img src="images/cine_canyon_aerial.jpg" alt="Aerial view of a sandstone canyon at golden hour" loading="lazy"><figcaption>Arid canyon · aerial</figcaption></figure>
       <figure><img src="images/cine_canyon_tele.jpg" alt="Layered sandstone cliffs and a lit massif in dusty evening light" loading="lazy"><figcaption>Sandstone strata · golden hour</figcaption></figure>
     </div>
-    <p class="note">Rendered in Cycles. The terrain, its colours and rock come straight from the add-on; the dust and cloud layers and the colour grade were added for these shots.</p>
+    <p class="note">Rendered in Cycles. The terrain, its colours and rock come straight from the add-on, and so does the land around it out to the horizon (Surroundings); the dust and cloud layers and the colour grade were added for these shots.</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">Surroundings</div>
+    <h2>The land goes on <em>to the horizon.</em></h2>
+    <p class="lead">A terrain is a square, and a camera that looks across it sees the ground stop. Surroundings carries it on: Build Final adds rings around the terrain, quilted from its own landforms at the same size and turned in every direction, each ring three times wider than the one inside it, up to forty terrain widths past every edge. They meet the terrain exactly and carry its colours, rock and haze. Drag the slider.</p>
+    <div class="frame"><div class="ba">
+      <img src="images/sr_off.jpg" alt="An arid canyon terrain whose ground ends at its edge, with empty sky behind it" loading="lazy">
+      <img class="after" src="images/sr_on.jpg" alt="The same canyon with Surroundings: mesas and canyons go on to the horizon" loading="lazy">
+      <div class="bar"></div><div class="knob">‹ ›</div>
+      <span class="tag l">Terrain only</span><span class="tag r">With surroundings</span>
+    </div></div>
   </section>
 
   <section>
@@ -360,6 +398,7 @@
       <div class="row"><div>Export</div><div>PNG 16-bit · OpenEXR float · RAW 16-bit · RAW 32-bit · tiles 1 × 1 to 8 × 8 · Unreal Engine and Unity sizes</div></div>
       <div class="row"><div>Maps</div><div>Height, colour, normal (OpenGL or DirectX), roughness, occlusion, any mask</div></div>
       <div class="row"><div>Render</div><div>Cycles and EEVEE; adaptive displacement for close-ups in Cycles</div></div>
+      <div class="row"><div>Surroundings</div><div>1 to 4 rings around the terrain, up to 40 terrain widths past every edge, quilted from its own landforms</div></div>
       <div class="row"><div>Content</div><div>79 node types · 135 presets in 18 families · 9 starter templates · 5 biomes with trees, rocks and ground textures</div></div>
       <div class="row"><div>Licence</div><div>GPL-3.0-or-later, source code included</div></div>
     </div>
@@ -373,6 +412,7 @@
       <div><h3>Does it need a powerful GPU?</h3><p>No. Everything runs on the CPU; with a GPU the simulations run many times faster.</p></div>
       <div><h3>Can I use the terrains in a game engine?</h3><p>Yes. Export height and every map at the sizes Unreal Engine and Unity terrains expect, as single files or tiles.</p></div>
       <div><h3>Can I use my own models and height maps?</h3><p>Yes. Object Height and Heightmap Image bring them into the graph, and Paint Mask lets you paint by hand.</p></div>
+      <div><h3>Does the terrain end at its edges?</h3><p>Not if you want it to go on: Surroundings carries it to the horizon with rings made from its own landforms, so wide shots show land, not empty sky.</p></div>
       <div><h3>Does it work in EEVEE?</h3><p>Yes. The terrain material, sky and haze work in EEVEE and Cycles; adaptive displacement for close-ups is Cycles only.</p></div>
       <div><h3>Does it download anything?</h3><p>No. Presets, trees, rocks and ground textures are inside the add-on, and it never connects to the internet.</p></div>
       <div><h3>Can I use my renders and maps commercially?</h3><p>Yes. The terrains, renders and maps you make with it are yours to use in any project.</p></div>
@@ -381,7 +421,7 @@
     <a class="btn" href="docs.html">Read the documentation →</a><a class="btn ghost" href="docs.html#node-reference">All 79 nodes</a>
   </section>
 
-  <footer><div class="wm">LITHOS TERRAIN</div><div class="meta">Version 0.29 · Blender 5.2+ · <a href="docs.html">Documentation</a></div></footer>
+  <footer><div class="wm">LITHOS TERRAIN</div><div class="meta">Version 0.30 · Blender 5.2+ · <a href="docs.html">Documentation</a></div></footer>
 </main>
 
 <script>
@@ -412,11 +452,26 @@
     window.addEventListener("load", post);
     if (window.ResizeObserver) new ResizeObserver(post).observe(document.body);
   })();
-  // before / after slider
+  // film: swap the poster for the YouTube player (privacy-enhanced mode) on the first press
   (function () {
-    var ba = document.getElementById("ba"); if (!ba) return;
+    var f = document.getElementById("film"); if (!f) return;
+    function play() {
+      if (f.classList.contains("on")) return;
+      var p = document.createElement("iframe");
+      p.src = "https://www.youtube-nocookie.com/embed/" + f.getAttribute("data-yt") + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
+      p.title = "Lithos Terrain video";
+      p.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      p.setAttribute("allowfullscreen", "");
+      f.appendChild(p);
+      f.classList.add("on");
+    }
+    f.addEventListener("click", play);
+    f.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); play(); } });
+  })();
+  // before / after sliders
+  [].slice.call(document.querySelectorAll(".ba")).forEach(function (ba, i) {
     var after = ba.querySelector(".after"), bar = ba.querySelector(".bar"), knob = ba.querySelector(".knob");
-    var down = false, auto = true, t0 = performance.now();
+    var down = false, auto = true, t0 = performance.now() - i * 2200;
     function set(f) {
       f = Math.max(0, Math.min(1, f));
       after.style.clipPath = "inset(0 0 0 " + (f * 100) + "%)";
@@ -426,8 +481,8 @@
     ba.addEventListener("pointerdown", function (e) { down = true; auto = false; ba.setPointerCapture(e.pointerId); set(at(e)); });
     ba.addEventListener("pointermove", function (e) { if (down) set(at(e)); else if (e.pointerType === "mouse") { auto = false; set(at(e)); } });
     ba.addEventListener("pointerup", function () { down = false; });
-    (function tick(t) { if (auto) { set(0.5 + 0.38 * Math.sin((t - t0) / 1400)); requestAnimationFrame(tick); } })(t0);
-  })();
+    (function tick(t) { if (auto) { set(0.5 + 0.38 * Math.sin((t - t0) / 1400)); requestAnimationFrame(tick); } })(performance.now());
+  });
 </script>
 </body>
 </html>
