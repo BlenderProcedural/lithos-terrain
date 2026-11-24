@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lithos Terrain: procedural terrain with real erosion, built node by node</title>
+<meta name="description" content="Lithos Terrain: a procedural terrain engine with its own node editor, physically based erosion, 135 ready-made terrains and map export for any engine.">
+<meta property="og:title" content="Lithos Terrain">
+<meta property="og:description" content="Procedural terrain with real erosion, built node by node.">
+<meta property="og:image" content="images/og.jpg">
+<style>
+  @font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+    src: url(fonts/inter-latin-standard-normal.woff2) format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+    src: url(fonts/inter-latin-ext-standard-normal.woff2) format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+</style>
+<script>
+  // Inside the store's iframe the whole page scales with the frame width (1rem = 16px at 832px), so its height is a
+  // fixed multiple of its width and the iframe can keep one aspect ratio. Opened directly it is a centred 832px column.
+  (function () {
+    var embed = window.self !== window.top || /[?&]embed=1/.test(location.search);
+    document.documentElement.className = embed ? "embed" : "standalone";
+  })();
+</script>
+<style>
+  :root {
+    --bg: #08090c; --bg2: #0d1015; --card: #12161c; --card2: #171c23;
+    --line: rgba(255, 255, 255, .075); --line2: rgba(255, 255, 255, .13);
+    --text: #eef0f2; --muted: #a2abb5; --dim: #6c7580;
+    --accent: #f3b15e; --accent-soft: rgba(243, 177, 94, .14); --ice: #8fc6e8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; background: var(--bg); }
+  html.embed { font-size: calc(100vw / 52); overflow: hidden; }
+  html.embed body { overflow: hidden; }
+  html.standalone body { padding: 2.5rem 0 4rem; background: radial-gradient(120rem 60rem at 50% -10%, #141922 0%, var(--bg) 60%); }
+  body { color: var(--text); font-family: Inter, "Segoe UI", system-ui, sans-serif; font-size: 1rem; line-height: 1.6;
+         -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  .page { width: 52rem; margin: 0 auto; background: var(--bg); overflow: hidden; }
+  html.standalone .page { border-radius: 1.1rem; border: 1px solid var(--line); box-shadow: 0 2rem 6rem rgba(0,0,0,.55); }
+  img, video { display: block; width: 100%; height: auto; }
+  a { color: inherit; }
+
+  /* type */
+  .eyebrow { font: 600 .66rem/1 Inter, sans-serif; letter-spacing: .26em; text-transform: uppercase; color: var(--accent);
+             display: flex; align-items: center; gap: .7rem; }
+  .eyebrow::before { content: ""; width: 1.6rem; height: 1px; background: currentColor; opacity: .7; }
+  .eyebrow .new { color: #0b0d10; background: var(--accent); border-radius: 1rem; padding: .28rem .55rem .26rem;
+                  letter-spacing: .18em; font-size: .56rem; }
+  h1, h2, h3 { font-family: Inter, sans-serif; font-weight: 300; letter-spacing: -.01em; }
+  h2 { font-size: 2.05rem; line-height: 1.12; margin: 1rem 0 .95rem; }
+  h2 em { font-style: normal; color: var(--accent); }
+  h3 { font-size: 1.06rem; font-weight: 400; line-height: 1.3; }
+  p { color: var(--muted); font-size: .98rem; }
+  p strong { color: var(--text); font-weight: 500; }
+
+  /* hero */
+  .hero { position: relative; height: 31rem; overflow: hidden; }
+  .hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
+  .hero::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(8,9,12,.0) 30%, rgba(8,9,12,.55) 66%, var(--bg) 100%),
+                linear-gradient(90deg, rgba(8,9,12,.55) 0%, rgba(8,9,12,0) 55%); }
+  .hero-in { position: absolute; left: 3rem; right: 3rem; bottom: 2.4rem; z-index: 2; }
+  .badge { display: inline-flex; align-items: center; gap: .55rem; font: 500 .66rem/1 Inter, sans-serif; letter-spacing: .08em;
+           color: var(--text); background: rgba(14,17,22,.62); border: 1px solid var(--line2); border-radius: 2rem;
+           padding: .5rem .85rem .5rem .55rem; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .badge b { color: #0b0d10; background: var(--accent); border-radius: 1rem; padding: .25rem .5rem; font-weight: 600; letter-spacing: .14em; font-size: .56rem; }
+  .wordmark { font: 200 3.35rem/1 Inter, sans-serif; letter-spacing: .42em; margin: 1.35rem 0 .9rem -.05em; }
+  .tagline { font: 300 1.32rem/1.4 Inter, sans-serif; color: #dfe3e7; max-width: 34rem; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .stat { padding: 1.35rem 0 1.3rem 3rem; border-left: 1px solid var(--line); }
+  .stat:first-child { border-left: 0; }
+  .stat .n { font: 200 2.25rem/1 Inter, sans-serif; color: var(--text); }
+  .stat .n small { font-size: .9rem; color: var(--accent); margin-left: .15rem; font-weight: 400; }
+  .stat .l { font: 500 .62rem/1.35 Inter, sans-serif; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); margin-top: .55rem; }
+
+  /* sections */
+  section { padding: 3.6rem 3rem 0; }
+  section.last { padding-bottom: 3.6rem; }
+  .lead { max-width: 40rem; }
+  .frame { position: relative; margin-top: 1.6rem; border-radius: .9rem; overflow: hidden; border: 1px solid var(--line2);
+           background: var(--card); box-shadow: 0 1.4rem 3rem rgba(0,0,0,.45); }
+  .frame.r169 { aspect-ratio: 16 / 9; }
+  .frame.r21 { aspect-ratio: 2 / 1; }
+  .frame video, .frame > img { width: 100%; height: 100%; object-fit: cover; }
+  .cap { position: absolute; left: 1rem; bottom: .9rem; font: 500 .6rem/1 Inter, sans-serif; letter-spacing: .18em; text-transform: uppercase;
+         color: #fff; background: rgba(8,9,12,.6); border: 1px solid var(--line2); padding: .45rem .65rem; border-radius: 2rem;
+         backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; margin-top: 1.7rem; }
+  .points.two { grid-template-columns: repeat(2, 1fr); }
+  .pt h3 { color: var(--text); margin-bottom: .35rem; display: flex; align-items: center; gap: .5rem; }
+  .pt h3::before { content: ""; width: .38rem; height: .38rem; border-radius: 50%; background: var(--accent); flex: none; }
+  .pt p { font-size: .84rem; line-height: 1.55; }
+  .split { display: grid; grid-template-columns: 1.05fr 1fr; gap: 2rem; align-items: center; }
+  .split .frame { margin-top: 0; }
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--line2), transparent); margin: 3.6rem 3rem 0; }
+
+  /* before / after */
+  .ba { position: relative; aspect-ratio: 2 / 1; cursor: ew-resize; user-select: none; -webkit-user-select: none; touch-action: pan-y; }
+  .ba img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .ba .after { clip-path: inset(0 0 0 50%); }
+  .ba .bar { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: #fff;
+             box-shadow: 0 0 1.2rem rgba(0,0,0,.6); }
+  .ba .knob { position: absolute; top: 50%; left: 50%; width: 2.6rem; height: 2.6rem; margin: -1.3rem 0 0 -1.3rem; border-radius: 50%;
+              background: rgba(10,12,16,.72); border: 1px solid rgba(255,255,255,.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+              display: grid; place-items: center; color: #fff; font: 500 .8rem/1 Inter, sans-serif; letter-spacing: .1em; }
+  .ba .tag { position: absolute; top: 1rem; font: 600 .58rem/1 Inter, sans-serif; letter-spacing: .2em; text-transform: uppercase;
+             padding: .45rem .65rem; border-radius: 2rem; background: rgba(8,9,12,.6); border: 1px solid var(--line2); }
+  .ba .tag.l { left: 1rem; } .ba .tag.r { right: 1rem; color: var(--accent); }
+
+  /* chips, catalogue, specs */
+  .chips { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1.3rem; }
+  .chip { font: 500 .7rem/1 Inter, sans-serif; color: var(--text); background: var(--card2); border: 1px solid var(--line);
+          border-radius: 2rem; padding: .48rem .75rem; }
+  .chip.hot { border-color: rgba(243,177,94,.45); color: var(--accent); background: var(--accent-soft); }
+  .cat { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin-top: 1.7rem; }
+  .cc { background: linear-gradient(180deg, var(--card2), var(--card)); border: 1px solid var(--line); border-radius: .8rem; padding: 1.05rem 1.1rem 1.1rem; }
+  .cc .h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .55rem; }
+  .cc .h span { font: 500 .62rem/1 Inter, sans-serif; letter-spacing: .2em; text-transform: uppercase; color: var(--text); }
+  .cc .h b { font: 200 1.35rem/1 Inter, sans-serif; color: var(--accent); }
+  .cc p { font-size: .72rem; line-height: 1.55; color: var(--muted); }
+  .specs { margin-top: 1.6rem; border: 1px solid var(--line); border-radius: .8rem; overflow: hidden; }
+  .row { display: grid; grid-template-columns: 12rem 1fr; border-top: 1px solid var(--line); }
+  .row:first-child { border-top: 0; }
+  .row > div { padding: .8rem 1.1rem; font-size: .82rem; }
+  .row > div:first-child { color: var(--dim); font-weight: 500; letter-spacing: .02em; background: rgba(255,255,255,.015); }
+  .row > div:last-child { color: var(--text); }
+  .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem 2rem; margin-top: 1.6rem; }
+  .faq h3 { color: var(--text); font-size: .95rem; margin-bottom: .35rem; }
+  .faq p { font-size: .8rem; line-height: 1.55; }
+  .new-list { margin-top: 1.4rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem; }
+  .nl { border: 1px solid var(--line); border-radius: .8rem; padding: 1rem 1.1rem; background: var(--card); }
+  .nl h3 { color: var(--text); margin-bottom: .3rem; font-size: .98rem; }
+  .nl p { font-size: .78rem; line-height: 1.5; }
+  .nl .k { font: 600 .56rem/1 Inter, sans-serif; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; margin-bottom: .55rem; display: block; }
+  footer { padding: 2.6rem 3rem 2.8rem; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+  footer .wm { font: 200 1.05rem/1 Inter, sans-serif; letter-spacing: .42em; }
+  footer .meta { font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .btn { display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.6rem; font: 600 .72rem/1 Inter, sans-serif;
+         letter-spacing: .14em; text-transform: uppercase; color: #0b0d10; background: var(--accent); text-decoration: none;
+         border-radius: 2rem; padding: .85rem 1.25rem; }
+  .btn.ghost { color: var(--text); background: transparent; border: 1px solid var(--line2); margin-left: .6rem; }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <header class="hero">
+    <img src="images/hero.jpg" alt="A forested highland valley generated and eroded with Lithos Terrain">
+    <div class="hero-in">
+      <span class="badge"><b>NEW 0.29</b> Landscape node · Rock Layers · up to 5× faster builds</span>
+      <div class="wordmark">LITHOS TERRAIN</div>
+      <p class="tagline">Generate, erode, colour and export photoreal landscapes, built node by node.</p>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="n">79</div><div class="l">Node types</div></div>
+    <div class="stat"><div class="n">135</div><div class="l">Ready-made terrains</div></div>
+    <div class="stat"><div class="n">1.5<small>s</small></div><div class="l">GPU erosion at 4096²</div></div>
+    <div class="stat"><div class="n">8K</div><div class="l">16-bit &amp; float export</div></div>
+  </div>
+
+  <section>
+    <div class="eyebrow">Node editor</div>
+    <h2>Build any terrain, <em>node by node.</em></h2>
+    <p class="lead">Lithos Terrain brings its own node editor. Start from a mountain, carve the valleys, let rain erode them, add snow and colour, and watch the terrain update as you connect each node. Every node shows a live preview, and only the nodes you change are computed again.</p>
+    <div class="frame r169"><video data-src="media/node_build.mp4" poster="images/node_build_poster.jpg" muted loop playsinline></video><span class="cap">Six nodes · one finished terrain</span></div>
+    <div class="points">
+      <div class="pt"><h3>Live previews</h3><p>A thumbnail on every node and a fast preview mesh. Preview any node on the terrain itself, as height, mask or colour.</p></div>
+      <div class="pt"><h3>Preview &amp; Final</h3><p>Iterate on a fast preview mesh, then build the Final terrain up to 4K with 4096 surface maps.</p></div>
+      <div class="pt"><h3>Built for big graphs</h3><p>Node groups, portals, a result cache and background builds that never block the interface.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Simulation</div>
+    <h2>Erosion that looks like <em>a real place.</em></h2>
+    <p class="lead">Water carves branching valley networks, sediment settles into the hollows, and thermal and glacial erosion shape cliffs, scree and U-shaped valleys. Drag the slider: the same six-node terrain, before and after the simulation.</p>
+    <div class="frame"><div class="ba" id="ba">
+      <img src="images/before.jpg" alt="Raw noise terrain before erosion">
+      <img class="after" src="images/after.jpg" alt="The same terrain after Stream Erosion, Erosion and Snow">
+      <div class="bar"></div><div class="knob">‹ ›</div>
+      <span class="tag l">Before</span><span class="tag r">After erosion</span>
+    </div></div>
+    <div class="chips">
+      <span class="chip">Hydraulic erosion</span><span class="chip">Stream erosion</span><span class="chip">Thermal erosion</span>
+      <span class="chip">Glacial erosion</span><span class="chip">Alluvial fans</span><span class="chip">Rivers &amp; lakes</span>
+      <span class="chip">Snow</span><span class="chip">Sediments</span><span class="chip">Rock weathering</span><span class="chip hot">GPU accelerated</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow"><span class="new">New</span> Landscape node</div>
+    <h2>One node. <em>A whole landscape.</em></h2>
+    <p class="lead">Pick a landform and a climate, set the age, the snow line, water and vegetation, and the Landscape node builds a complete natural terrain: shaped, eroded, coloured, with rock, snow, water, vegetation, flow and sediment masks ready to use. <strong>Landscape → Terrain Output</strong> is a finished graph.</p>
+    <div class="frame r21"><video data-src="media/climates.mp4" poster="images/climates_poster.jpg" muted loop playsinline></video><span class="cap">Arid canyon · Temperate hills · Cold highland</span></div>
+    <div class="points">
+      <div class="pt"><h3>6 landforms</h3><p>Mountain range, alpine massif, highland valley, rolling hills, canyon and volcano.</p></div>
+      <div class="pt"><h3>4 climates</h3><p>Alpine, temperate, arid and cold, each with its own colours, vegetation and snow.</p></div>
+      <div class="pt"><h3>Quick Landscape</h3><p>A one-click template: a finished terrain the moment you create the project.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="split">
+      <div>
+        <div class="eyebrow"><span class="new">New</span> Rock structure</div>
+        <h2>Cliffs that follow <em>the rock.</em></h2>
+        <p>Rock Layers builds hard and soft beds with dip, folds and caprock. Linked into Stream and Thermal Erosion, hard beds stand as cliffs while soft beds fail into talus: stepped canyon walls and scree aprons, the way real strata weather.</p>
+      </div>
+      <div class="frame r169"><video data-src="media/weathering.mp4" poster="images/weathering_poster.jpg" muted loop playsinline></video></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Preset library</div>
+    <h2>135 ready-made terrains. <em>All of them editable.</em></h2>
+    <p class="lead">Canyons, glaciers, volcanoes, mesas, dunes, crater lakes, forests and highland valleys in 18 families. Each preset opens as a full node graph you can take apart and make your own.</p>
+    <div class="frame r169"><video data-src="media/preset_wall.mp4" poster="images/preset_wall_poster.jpg" muted loop playsinline></video></div>
+  </section>
+
+  <section>
+    <div class="split">
+      <div class="frame r169"><video data-src="media/any_mesh.mp4" poster="images/any_mesh_poster.jpg" muted loop playsinline></video></div>
+      <div>
+        <div class="eyebrow">Any input</div>
+        <h2>Erode <em>any mesh.</em></h2>
+        <p>Object Height turns a model into terrain, Heightmap Image reads any height map, and Paint Mask lets you paint where things happen, right in the viewport. Then erode it like any other terrain.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Export</div>
+    <h2>Every map, <em>ready for any engine.</em></h2>
+    <p class="lead">Height, colour, normal, roughness, occlusion and every mask: 16-bit PNG, float OpenEXR or RAW, up to 8193 samples, tiled up to 8 × 8, with sizes for game-engine terrains. A JSON sidecar records the world size and height.</p>
+    <div class="frame r169"><video data-src="media/export_maps.mp4" poster="images/export_maps_poster.jpg" muted loop playsinline></video></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">What's new in 0.29</div>
+    <h2>Faster, deeper, <em>more natural.</em></h2>
+    <div class="new-list">
+      <div class="nl"><span class="k">New node</span><h3>Landscape</h3><p>A complete natural terrain from one node: landform, climate, age, snow line, water, vegetation, detail.</p></div>
+      <div class="nl"><span class="k">New node</span><h3>Rock Layers</h3><p>Hard and soft beds in 3D; with Stream and Thermal Erosion they give stepped cliffs and talus.</p></div>
+      <div class="nl"><span class="k">Improved</span><h3>Cleaner erosion</h3><p>No worm-like ridges, far less sediment sheeting, crisp V-shaped banks. Mass stays exact.</p></div>
+      <div class="nl"><span class="k">Performance</span><h3>Up to 5× faster builds</h3><p>Final builds on the CPU in a fraction of the time, with results identical to the previous version.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Node catalogue</div>
+    <h2>79 nodes in <em>nine categories.</em></h2>
+    <div class="cat">
+      <div class="cc"><div class="h"><span>Terrain</span><b>11</b></div><p>Landscape, Mountain, Ridged Noise, Hills, Uplift, Canyon, Dunes, Crater, Volcano, Island, Example Synth</p></div>
+      <div class="cc"><div class="h"><span>Simulate</span><b>15</b></div><p>Erosion, Stream Erosion, Thermal Erosion, Glacier, Glacial Erosion, Alluvial Fans, Shallow Water, Rock Weathering, Rivers, Water, Fill Sinks, Snow, Sediments, Debris, Vegetation</p></div>
+      <div class="cc"><div class="h"><span>Modify</span><b>12</b></div><p>Combine, Levels, Remap, Curve, Band Equalizer, Shaper, Filter, Morphology, Warp, Transform, Distance, Mixer</p></div>
+      <div class="cc"><div class="h"><span>Primitives</span><b>10</b></div><p>Noise, Cellular, Gabor Noise, Pattern, Shape, Gradient, Constant, Heightmap Image, Object Height, Paint Mask</p></div>
+      <div class="cc"><div class="h"><span>Derive</span><b>9</b></div><p>Rock Layers, Selector, Flow Map, Normal Map, Shading, Material Mask, Color Select, Soil Map, Surface Texture</p></div>
+      <div class="cc"><div class="h"><span>Colorize</span><b>9</b></div><p>Terrain Colors, Gradient Map, Photo Ramp, Color Flow, Color Weathering, Mix Color, Color Adjust, Separate Color, Combine Color</p></div>
+      <div class="cc"><div class="h"><span>Surface</span><b>6</b></div><p>Terrace, Stratify, Surface Detail, Rocks, Scatter Stamps, Gully Detail</p></div>
+      <div class="cc"><div class="h"><span>Utility</span><b>5</b></div><p>Math, Switch, Make Tileable, Portal Send, Portal Receive</p></div>
+      <div class="cc"><div class="h"><span>Output</span><b>2</b></div><p>Terrain Output, Mask Output</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Also included</div>
+    <h2>Everything to <em>finish the shot.</em></h2>
+    <div class="points">
+      <div class="pt"><h3>Biomes &amp; scatter</h3><p>Five biomes of trees, shrubs, grass and rocks placed by the terrain's own masks. Scatter your own models or collections too.</p></div>
+      <div class="pt"><h3>Sky &amp; haze</h3><p>One click sets up the sun, sky and aerial haze, scaled to the size of your terrain.</p></div>
+      <div class="pt"><h3>Render-ready mesh</h3><p>Adaptive displacement for renders, a lighter viewport mesh and surface maps up to 4096.</p></div>
+      <div class="pt"><h3>Guided tutorial</h3><p>An interactive tutorial inside the node editor walks you through your first graph.</p></div>
+      <div class="pt"><h3>Save &amp; share graphs</h3><p>Save any graph to a file and load it into another project.</p></div>
+      <div class="pt"><h3>Seamless tiles</h3><p>Make Tileable and tiled export for large worlds and game levels.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Specifications</div>
+    <h2>The details.</h2>
+    <div class="specs">
+      <div class="row"><div>Requires</div><div>Blender 5.2 or newer (extension format; drag and drop to install)</div></div>
+      <div class="row"><div>Engine</div><div>Pure Python and NumPy, multi-threaded; GPU compute for the simulations where available</div></div>
+      <div class="row"><div>Speed</div><div>Erosion of a 4096 × 4096 terrain in about 1.5 s on an RTX 4060; CPU builds use every core</div></div>
+      <div class="row"><div>Build resolution</div><div>Preview 128 to 512 · Final up to 4096 · surface maps up to 4096</div></div>
+      <div class="row"><div>Export</div><div>PNG 16-bit · OpenEXR float · RAW 16-bit · RAW 32-bit · up to 8193 samples · tiles 1 × 1 to 8 × 8</div></div>
+      <div class="row"><div>Maps</div><div>Height, colour, normal (OpenGL or DirectX), roughness, occlusion, any mask</div></div>
+      <div class="row"><div>Content</div><div>79 node types · 135 presets · 9 starter templates · 5 biomes</div></div>
+      <div class="row"><div>Licence</div><div>GPL-3.0-or-later</div></div>
+    </div>
+  </section>
+
+  <section class="last">
+    <div class="eyebrow">FAQ</div>
+    <h2>Questions.</h2>
+    <div class="faq">
+      <div><h3>Do I need to know node editors?</h3><p>No. Start from a preset or the one-node Quick Landscape template, and the guided tutorial teaches the editor step by step.</p></div>
+      <div><h3>Does it need a powerful GPU?</h3><p>No. Everything runs on the CPU; with a GPU the simulations run many times faster.</p></div>
+      <div><h3>Can I use the terrains in a game engine?</h3><p>Yes. Export height and every map at the sizes game-engine terrains expect, as single files or tiles.</p></div>
+      <div><h3>Can I use my own models and height maps?</h3><p>Yes. Object Height and Heightmap Image bring them into the graph, and Paint Mask lets you paint by hand.</p></div>
+    </div>
+    <a class="btn" href="docs.html">Read the documentation →</a><a class="btn ghost" href="docs.html#node-reference">All 79 nodes</a>
+  </section>
+
+  <footer><div class="wm">LITHOS TERRAIN</div><div class="meta">Version 0.29 · Blender 5.2+ · <a href="docs.html">Documentation</a></div></footer>
+</main>
+
+<script>
+  // videos load and play only while they are on screen
+  (function () {
+    var vids = [].slice.call(document.querySelectorAll("video[data-src]"));
+    function start(v) {
+      if (!v.src) { v.src = v.getAttribute("data-src"); }
+      var p = v.play(); if (p && p.catch) { p.catch(function () {}); }
+    }
+    if (!("IntersectionObserver" in window)) { vids.forEach(start); return; }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { start(e.target); } else if (e.target.src) { e.target.pause(); } });
+    }, { rootMargin: "200px 0px" });
+    vids.forEach(function (v) { io.observe(v); });
+  })();
+  // inside a store's iframe: links to other pages open in a new tab, and the height is posted to the parent
+  (function () {
+    if (window.self === window.top) return;
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a");
+      if (!a || (a.getAttribute("href") || "").charAt(0) === "#") return;
+      a.target = "_blank"; a.rel = "noopener";
+    });
+    function post() {
+      try { parent.postMessage({ type: "lithosterrain-height", height: document.documentElement.scrollHeight }, "*"); } catch (err) {}
+    }
+    window.addEventListener("load", post);
+    if (window.ResizeObserver) new ResizeObserver(post).observe(document.body);
+  })();
+  // before / after slider
+  (function () {
+    var ba = document.getElementById("ba"); if (!ba) return;
+    var after = ba.querySelector(".after"), bar = ba.querySelector(".bar"), knob = ba.querySelector(".knob");
+    var down = false, auto = true, t0 = performance.now();
+    function set(f) {
+      f = Math.max(0, Math.min(1, f));
+      after.style.clipPath = "inset(0 0 0 " + (f * 100) + "%)";
+      bar.style.left = knob.style.left = (f * 100) + "%";
+    }
+    function at(e) { var r = ba.getBoundingClientRect(); return (e.clientX - r.left) / r.width; }
+    ba.addEventListener("pointerdown", function (e) { down = true; auto = false; ba.setPointerCapture(e.pointerId); set(at(e)); });
+    ba.addEventListener("pointermove", function (e) { if (down) set(at(e)); else if (e.pointerType === "mouse") { auto = false; set(at(e)); } });
+    ba.addEventListener("pointerup", function () { down = false; });
+    (function tick(t) { if (auto) { set(0.5 + 0.38 * Math.sin((t - t0) / 1400)); requestAnimationFrame(tick); } })(t0);
+  })();
+</script>
+</body>
+</html>
