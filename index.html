@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lithos Terrain: procedural terrain with real erosion, built node by node</title>
-<meta name="description" content="Lithos Terrain: a procedural terrain engine with its own node editor, physically based erosion, 135 ready-made terrains and map export for any engine.">
+<meta name="description" content="Lithos Terrain: a procedural terrain engine with its own node editor, physically based erosion, 174 ready-made terrains and map export for any engine.">
 <meta property="og:title" content="Lithos Terrain">
 <meta property="og:description" content="Procedural terrain with real erosion, built node by node.">
 <meta property="og:image" content="images/og_canyon.jpg">
@@ -199,18 +199,25 @@
   <header class="hero">
     <img src="images/hero_canyon.jpg" alt="Layered sandstone cliffs above a dusty canyon at sunset, generated and eroded with Lithos Terrain">
     <div class="hero-in">
-      <span class="badge"><b>BLENDER 5.2+</b> Procedural terrain studio</span>
+      <span class="badge"><b>BLENDER 4.5+</b> Procedural terrain studio</span>
       <div class="wordmark">LITHOS TERRAIN</div>
       <p class="tagline">Photoreal landscapes, shaped by real erosion and built node by node, without leaving Blender.</p>
     </div>
   </header>
 
   <div class="stats">
-    <div class="stat"><div class="n">79</div><div class="l">Node types</div></div>
-    <div class="stat"><div class="n">135</div><div class="l">Ready-made terrains</div></div>
-    <div class="stat"><div class="n">5</div><div class="l">Biomes included</div></div>
+    <div class="stat"><div class="n">86</div><div class="l">Node types</div></div>
+    <div class="stat"><div class="n">174</div><div class="l">Ready-made terrains</div></div>
+    <div class="stat"><div class="n">10</div><div class="l">Biomes included</div></div>
     <div class="stat"><div class="n">8K</div><div class="l">16-bit &amp; float export</div></div>
   </div>
+
+  <section>
+    <div class="eyebrow">New in 0.50 · Everything since 0.30</div>
+    <h2>Forests, rivers, coasts <em>and much more.</em></h2>
+    <p class="lead">Forests at their real size with every tree in the viewport, six new nodes for rivers, karst, lava, faults, wind and curve paths, the Coast node with cliffs, sea stacks and beaches, and 39 new terrains: forests, coasts and islands, deserts, cliffs, volcanoes, river valleys, karst and rifts.</p>
+    <div class="frame r169"><video controls playsinline preload="none" poster="images/whats_new_050_poster.jpg" src="media/whats_new_050.mp4"></video></div>
+  </section>
 
   <section>
     <div class="eyebrow">Watch</div>
@@ -226,7 +233,7 @@
     <div class="eyebrow">How it works</div>
     <h2>From an empty scene to <em>a finished landscape.</em></h2>
     <div class="steps">
-      <div class="step"><div class="no">01</div><h3>Start</h3><p>Pick one of 135 presets or a starter template, or drop in a single Landscape node. A finished terrain appears in seconds.</p></div>
+      <div class="step"><div class="no">01</div><h3>Start</h3><p>Pick one of 174 presets or a starter template, or drop in a single Landscape node. A finished terrain appears in seconds.</p></div>
       <div class="step"><div class="no">02</div><h3>Shape</h3><p>Change any node or add your own: mountains, valleys, erosion, rock, water, snow and vegetation, each with a live preview.</p></div>
       <div class="step"><div class="no">03</div><h3>Finish</h3><p>Sun, sky and haze in one click, forests and rocks from the terrain's own masks, then render in Cycles or export every map.</p></div>
     </div>
@@ -291,7 +298,7 @@
     <p class="lead">Pick a landform and a climate, set the age, the snow line, water and vegetation, and the Landscape node builds a complete natural terrain: shaped, eroded, coloured, with rock, snow, water, vegetation, flow and sediment masks ready to use. <strong>Landscape → Terrain Output</strong> is a finished graph.</p>
     <div class="frame r21"><video data-src="media/climates.mp4" poster="images/climates_poster.jpg" muted loop playsinline></video><span class="cap">Arid canyon · Temperate hills · Cold highland</span></div>
     <div class="points">
-      <div class="pt"><h3>6 landforms</h3><p>Mountain range, alpine massif, highland valley, rolling hills, canyon and volcano.</p></div>
+      <div class="pt"><h3>13 landforms</h3><p>Mountain range, alpine massif, highland valley, rolling hills, canyon, volcano, caldera, coastline, island, dune sea, river plain, tower karst and rift valley.</p></div>
       <div class="pt"><h3>4 climates</h3><p>Alpine, temperate, arid and cold, each with its own colours, vegetation and snow.</p></div>
       <div class="pt"><h3>Quick Landscape</h3><p>A one-click template: a finished terrain the moment you create the project.</p></div>
     </div>
@@ -311,8 +318,8 @@
 
   <section>
     <div class="eyebrow">Preset library</div>
-    <h2>135 ready-made terrains. <em>All of them editable.</em></h2>
-    <p class="lead">Canyons, glaciers, volcanoes, mesas, dunes, crater lakes, forests and highland valleys in 18 families. Each preset opens as a full node graph you can take apart and make your own.</p>
+    <h2>174 ready-made terrains. <em>All of them editable.</em></h2>
+    <p class="lead">Forests that bring their trees, meandering rivers, tower karst, rift valleys, lava fields, coasts, islands, fjords, canyons, glaciers, volcanoes, cliffs, mesas, dunes, crater lakes, forests and highland valleys in 25 families. Each preset opens as a full node graph you can take apart and make your own.</p>
     <div class="frame r169"><video data-src="media/preset_wall.mp4" poster="images/preset_wall_poster.jpg" muted loop playsinline></video></div>
   </section>
 
@@ -341,7 +348,7 @@
       <div class="use"><span class="k">Games</span><h3>Game worlds</h3><p>Height, colour and mask maps at the sizes Unreal Engine and Unity terrains expect, as single files or seamless tiles.</p></div>
       <div class="use"><span class="k">Film</span><h3>Shots &amp; backdrops</h3><p>Hero mountains and endless backdrops with adaptive displacement, scattered forests and aerial haze, rendered in Cycles.</p></div>
       <div class="use"><span class="k">Archviz</span><h3>Context terrain</h3><p>Rolling hills, a valley or a mountain backdrop around your building in minutes, at real-world scale.</p></div>
-      <div class="use"><span class="k">Learning</span><h3>How land forms</h3><p>135 editable graphs: take any preset apart node by node and see how each landform comes about.</p></div>
+      <div class="use"><span class="k">Learning</span><h3>How land forms</h3><p>174 editable graphs: take any preset apart node by node and see how each landform comes about.</p></div>
     </div>
   </section>
 
@@ -354,13 +361,13 @@
       <div class="nl"><span class="k">Speed</span><h3>Fast where it counts</h3><p>GPU compute for the simulations, every CPU core for the rest, and a cache that rebuilds only what changed.</p></div>
       <div class="nl"><span class="k">Offline</span><h3>Nothing to download</h3><p>Presets, trees, rocks and ground textures ship inside the add-on. No account, no internet connection needed.</p></div>
       <div class="nl"><span class="k">Open</span><h3>Yours to take apart</h3><p>Every preset is an ordinary node graph you can edit, and the add-on's source code comes with it (GPL).</p></div>
-      <div class="nl"><span class="k">Guided</span><h3>Easy to learn</h3><p>An interactive tutorial in the node editor and full documentation for all 79 nodes.</p></div>
+      <div class="nl"><span class="k">Guided</span><h3>Easy to learn</h3><p>An interactive tutorial in the node editor and full documentation for all 86 nodes.</p></div>
     </div>
   </section>
 
   <section>
     <div class="eyebrow">Node catalogue</div>
-    <h2>79 nodes in <em>nine categories.</em></h2>
+    <h2>86 nodes in <em>nine categories.</em></h2>
     <div class="cat">
       <div class="cc"><div class="h"><span>Terrain</span><b>11</b></div><p>Landscape, Mountain, Ridged Noise, Hills, Uplift, Canyon, Dunes, Crater, Volcano, Island, Example Synth</p></div>
       <div class="cc"><div class="h"><span>Simulate</span><b>15</b></div><p>Erosion, Stream Erosion, Thermal Erosion, Glacier, Glacial Erosion, Alluvial Fans, Shallow Water, Rock Weathering, Rivers, Water, Fill Sinks, Snow, Sediments, Debris, Vegetation</p></div>
@@ -391,7 +398,7 @@
     <div class="eyebrow">Specifications</div>
     <h2>The details.</h2>
     <div class="specs">
-      <div class="row"><div>Requires</div><div>Blender 5.2 or newer (extension format; drag and drop to install)</div></div>
+      <div class="row"><div>Requires</div><div>Blender 4.5 LTS or newer (extension format; drag and drop to install)</div></div>
       <div class="row"><div>Engine</div><div>NumPy engine on every CPU core, with GPU compute for the simulations where available; no extra installs</div></div>
       <div class="row"><div>Speed</div><div>Preview builds in a second or two · erosion of a 4096 × 4096 terrain in about 7 s on an RTX 4060 · the six-node graph above builds Final 2048 in about 3.5 s</div></div>
       <div class="row"><div>Resolution</div><div>Preview 128 to 512 · Final up to 4096 · surface maps and render mesh up to 8192 · export up to 8193</div></div>
@@ -399,7 +406,7 @@
       <div class="row"><div>Maps</div><div>Height, colour, normal (OpenGL or DirectX), roughness, occlusion, any mask</div></div>
       <div class="row"><div>Render</div><div>Cycles and EEVEE; adaptive displacement for close-ups in Cycles</div></div>
       <div class="row"><div>Surroundings</div><div>1 to 4 rings around the terrain, up to 40 terrain widths past every edge, quilted from its own landforms</div></div>
-      <div class="row"><div>Content</div><div>79 node types · 135 presets in 18 families · 9 starter templates · 5 biomes with trees, rocks and ground textures</div></div>
+      <div class="row"><div>Content</div><div>86 node types · 174 presets in 25 families · 9 starter templates · 10 biomes with trees at their real size, rocks and ground textures</div></div>
       <div class="row"><div>Licence</div><div>GPL-3.0-or-later, source code included</div></div>
     </div>
   </section>
@@ -418,10 +425,10 @@
       <div><h3>Can I use my renders and maps commercially?</h3><p>Yes. The terrains, renders and maps you make with it are yours to use in any project.</p></div>
       <div><h3>How do I get updates?</h3><p>New versions are delivered through your Superhive account; install them over the old one by drag and drop.</p></div>
     </div>
-    <a class="btn" href="docs.html">Read the documentation →</a><a class="btn ghost" href="docs.html#node-reference">All 79 nodes</a>
+    <a class="btn" href="docs.html">Read the documentation →</a><a class="btn ghost" href="docs.html#node-reference">All 86 nodes</a>
   </section>
 
-  <footer><div class="wm">LITHOS TERRAIN</div><div class="meta">Version 0.30 · Blender 5.2+ · <a href="docs.html">Documentation</a></div></footer>
+  <footer><div class="wm">LITHOS TERRAIN</div><div class="meta">Version 0.50.0 · Blender 4.5+ · <a href="docs.html">Documentation</a></div></footer>
 </main>
 
 <script>

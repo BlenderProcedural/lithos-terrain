@@ -1,7 +1,7 @@
 # Lithos Terrain: product page
 
 The product page and documentation for **Lithos Terrain**, a procedural terrain engine with its own node editor for
-Blender 5.2+: build terrains node by node, erode them with physically based simulations, start from 135 ready-made
+Blender 4.5+: build terrains node by node, erode them with physically based simulations, start from 174 ready-made
 terrains or a single Landscape node, and export every map for any engine.
 
 This repository holds only the description, the media and the docs. The add-on itself is sold on Superhive and is not
