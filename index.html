@@ -160,7 +160,13 @@
   .gallery figure { position: relative; border-radius: .9rem; overflow: hidden; border: 1px solid var(--line2);
                     background: var(--card); box-shadow: 0 1.2rem 2.6rem rgba(0,0,0,.4); aspect-ratio: 16 / 10; }
   .gallery figure.wide { grid-column: 1 / -1; aspect-ratio: 2 / 1; }
-  .gallery img { width: 100%; height: 100%; object-fit: cover; }
+  .gallery img, .gallery video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery.loops figure { aspect-ratio: 16 / 9; }
+  .gallery.loops figure.wide { aspect-ratio: 2 / 1; }
+  .wn .fs { position: absolute; right: .9rem; top: .9rem; font: 500 .6rem/1 Inter, sans-serif; letter-spacing: .16em;
+            text-transform: uppercase; color: #fff; background: rgba(8,9,12,.6); border: 1px solid var(--line2);
+            padding: .5rem .75rem; border-radius: 2rem; cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .wn .fs:hover { background: var(--accent); color: #0b0d10; }
   .gallery figcaption { position: absolute; left: .9rem; bottom: .8rem; font: 500 .56rem/1 Inter, sans-serif; letter-spacing: .18em;
                         text-transform: uppercase; color: #fff; background: rgba(8,9,12,.55); border: 1px solid var(--line2);
                         padding: .42rem .6rem; border-radius: 2rem; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
@@ -213,10 +219,22 @@
   </div>
 
   <section>
-    <div class="eyebrow">New in 0.50 · Everything since 0.30</div>
+    <div class="eyebrow">New in 0.50 · Forests</div>
+    <h2>Forests at their real size, <em>rendered in Cycles.</em></h2>
+    <p class="lead">Firs 15 to 32 m tall, planted at the density of real stands and spaced by their crowns, on forest ground that follows the terrain: from broadleaf trees in the valleys to stunted pines at the tree line. Each of these terrains brings its forest, which grows with the first Final build.</p>
+    <div class="frame r169"><video data-src="media/forest_fir.mp4" poster="images/forest_fir_poster.jpg" muted loop playsinline></video><span class="cap">Fir Valley · fir forest</span></div>
+    <div class="gallery loops">
+      <figure><video data-src="media/forest_mountain.mp4" poster="images/forest_mountain_poster.jpg" muted loop playsinline></video><figcaption>Mountain Forest</figcaption></figure>
+      <figure><video data-src="media/forest_river.mp4" poster="images/forest_river_poster.jpg" muted loop playsinline></video><figcaption>Forest River</figcaption></figure>
+      <figure class="wide"><video data-src="media/forest_pine.mp4" poster="images/forest_pine_poster.jpg" muted loop playsinline></video><figcaption>Pine Hills · pine forest</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Video · Everything since 0.30</div>
     <h2>Forests, rivers, coasts <em>and much more.</em></h2>
     <p class="lead">Forests at their real size with every tree in the viewport, six new nodes for rivers, karst, lava, faults, wind and curve paths, the Coast node with cliffs, sea stacks and beaches, and 39 new terrains: forests, coasts and islands, deserts, cliffs, volcanoes, river valleys, karst and rifts.</p>
-    <div class="frame r169"><video controls playsinline preload="none" poster="images/whats_new_050_poster.jpg" src="media/whats_new_050.mp4"></video></div>
+    <div class="frame r169 wn"><video id="wn" controls playsinline preload="none" poster="images/whats_new_050_poster.jpg" src="media/whats_new_050.mp4"></video><button class="fs" id="wn-fs" type="button">&#x26F6;&nbsp; Full screen</button></div>
   </section>
 
   <section>
@@ -474,6 +492,20 @@
     }
     f.addEventListener("click", play);
     f.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); play(); } });
+  })();
+  // the update video in full screen: in place when the page may use it; the store's frame allows full screen only to
+  // YouTube, Vimeo and a few other sites, so there it opens on its own page in a new tab, from the same moment
+  (function () {
+    var v = document.getElementById("wn"), b = document.getElementById("wn-fs"); if (!v || !b) return;
+    if (!document.fullscreenEnabled) { v.setAttribute("controlsList", "nofullscreen"); }
+    b.addEventListener("click", function () {
+      if (document.fullscreenEnabled && v.requestFullscreen) { v.requestFullscreen(); return; }
+      if (document.fullscreenEnabled === undefined && v.webkitEnterFullscreen) {  // iPhone
+        try { v.webkitEnterFullscreen(); return; } catch (err) {}
+      }
+      v.pause();
+      window.open("video.html#t=" + Math.floor(v.currentTime || 0), "_blank", "noopener");
+    });
   })();
   // before / after sliders
   [].slice.call(document.querySelectorAll(".ba")).forEach(function (ba, i) {

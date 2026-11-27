@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lithos Terrain 0.50 · What's new</title>
+<meta name="description" content="Lithos Terrain 0.50: forests at their real size and everything new since 0.30.">
+<style>
+  html, body { margin: 0; height: 100%; background: #000; }
+  video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+</style>
+</head>
+<body>
+<!-- The update video on a page of its own, where full screen works (the store's frame does not allow it). -->
+<video id="v" controls playsinline autoplay preload="auto" poster="images/whats_new_050_poster.jpg" src="media/whats_new_050.mp4"></video>
+<script>
+  (function () {
+    var v = document.getElementById("v");
+    var m = /t=(\d+)/.exec(location.hash);
+    if (m) { v.addEventListener("loadedmetadata", function () { v.currentTime = +m[1]; }, { once: true }); }
+    var p = v.play(); if (p && p.catch) { p.catch(function () {}); }
+  })();
+</script>
+</body>
+</html>
