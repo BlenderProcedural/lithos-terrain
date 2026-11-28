@@ -155,6 +155,15 @@
            border-radius: 50%; background: var(--bg2); border: 1px solid var(--line2); color: var(--accent);
            font: 500 .62rem/1.15rem Inter, sans-serif; text-align: center; z-index: 1; }
 
+  /* 0.51 feature grid */
+  .feats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 1.4rem; border: 1px solid var(--line);
+           border-radius: .9rem; overflow: hidden; background: linear-gradient(180deg, var(--card2), var(--card)); }
+  .feat { padding: 1.15rem 1.3rem 1.25rem; border-left: 1px solid var(--line); border-top: 1px solid var(--line); }
+  .feat:nth-child(3n+1) { border-left: 0; }
+  .feat:nth-child(-n+3) { border-top: 0; }
+  .feat h3 { color: var(--text); font-size: .98rem; font-weight: 500; margin: 0 0 .35rem; }
+  .feat p { font-size: .8rem; line-height: 1.5; }
+
   /* gallery */
   .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-top: 1.7rem; }
   .gallery figure { position: relative; border-radius: .9rem; overflow: hidden; border: 1px solid var(--line2);
@@ -227,6 +236,21 @@
       <figure><video data-src="media/forest_mountain.mp4" poster="images/forest_mountain_poster.jpg" muted loop playsinline></video><figcaption>Mountain Forest</figcaption></figure>
       <figure><video data-src="media/forest_river.mp4" poster="images/forest_river_poster.jpg" muted loop playsinline></video><figcaption>Forest River</figcaption></figure>
       <figure class="wide"><video data-src="media/forest_pine.mp4" poster="images/forest_pine_poster.jpg" muted loop playsinline></video><figcaption>Pine Hills · pine forest</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">New in 0.51 · Surroundings Only</div>
+    <h2>Mountains around <em>your own scene.</em></h2>
+    <p class="lead">For foreground objects and close-up landscapes: select your scene and click Fit to Selected. Lithos hides its own tile and frames your objects with its terrain at full detail, rising into ranges that run on to the horizon. Every setting changes them live, without a rebuild.</p>
+    <div class="frame r169"><img src="images/backdrop_arc.jpg" alt="A meadow of one's own in a forest clearing, framed by Lithos forests and snowy peaks" loading="lazy"><span class="cap">Surroundings Only · an arc of 230 degrees around a 140 m meadow</span></div>
+    <div class="feats">
+      <div class="feat"><h3>Fit to your scene</h3><p>Centred on your objects, the floor at their lowest point, clear past their outline. Center X, Y, Z, Distance and Rise by hand.</p></div>
+      <div class="feat"><h3>Round, arc or square</h3><p>A full 360 degrees or only what the camera sees: angle, heading, Face Camera, and Stretch for an ellipse.</p></div>
+      <div class="feat"><h3>Layered ranges</h3><p>Height and lift per ring, near to far: low hills, a range and high peaks rising one behind the other.</p></div>
+      <div class="feat"><h3>Shapes</h3><p>Circle, square and ring empties raise, lower, flatten, scale or cut the ranges, mixed in any number, live.</p></div>
+      <div class="feat"><h3>Tree cards</h3><p>Light cards of the bundled trees and shrubs at real size, lit like the models, on the vegetation and in the haze.</p></div>
+      <div class="feat"><h3>Colour, haze and fog</h3><p>Shading layers for tint, rock, green and snow, a haze tint and a low fog layer, and camera culling for renders.</p></div>
     </div>
   </section>
 
@@ -446,7 +470,7 @@
     <a class="btn" href="docs.html">Read the documentation →</a><a class="btn ghost" href="docs.html#node-reference">All 86 nodes</a>
   </section>
 
-  <footer><div class="wm">LITHOS TERRAIN</div><div class="meta">Version 0.50.0 · Blender 4.5+ · <a href="docs.html">Documentation</a></div></footer>
+  <footer><div class="wm">LITHOS TERRAIN</div><div class="meta">Version 0.51.0 · Blender 4.5+ · <a href="docs.html">Documentation</a></div></footer>
 </main>
 
 <script>
